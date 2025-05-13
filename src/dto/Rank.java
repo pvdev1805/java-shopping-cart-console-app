@@ -4,13 +4,13 @@ public class Rank {
 	private String rankId;
 	private String shopId;
 	private String rankName;
-	private Promotion promotion;
+	private String promotionId;
 	
-	public Rank(String rankId, String shopId, String rankName, Promotion promotion) {
+	public Rank(String rankId, String shopId, String rankName, String promotionId) {
 		this.rankId = rankId;
 		this.rankName = rankName;
 		this.shopId = shopId;
-		this.promotion = promotion;
+		this.promotionId = promotionId;
 	}
 	
 	public String getRankId() {
@@ -25,7 +25,7 @@ public class Rank {
 		return shopId;
 	}
 	
-	public Promotion getPromotion() {
-		return promotion;
+	public String getPromotionId() {
+		return promotionId;
 	}
 }
