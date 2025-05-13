@@ -1,0 +1,4 @@
+id,code,discount,discountType,active,customerLimit,customerUsage
+V001,SAVE10,10.0,FIXED,true,1,0
+V002,SAVE5,5.0,FIXED,true,3,0
+V003,PROMO5,5.0,PERCENTAGE,true,2,0

@@ -1,0 +1,6 @@
+productId,productName,price
+PT001,HDD,399.0
+PT002,VGA,799.0
+PT003,Keyboard,109.0
+PT004,Cable,39.0
+PT005,Pencil,1.5

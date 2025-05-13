@@ -1,0 +1,5 @@
+productId,productName,price
+PT001,Laptop,1599.0
+PT002,TV,899.0
+PT003,Textbook,149.0
+PT004,SSD,599.0

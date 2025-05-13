@@ -1,0 +1,4 @@
+customerId,accountId,rankId,name
+C001,A001,R001,James Smith
+C002,A002,R002,Nguyen Van B
+C003,A003,R003,Le Van E

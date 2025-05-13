@@ -1,0 +1,4 @@
+customerId,accountId,rankId,name
+C001,A001,R001,James Gun
+C002,A002,R003,Nguyen Van A
+C003,A003,R002,Le Van C
