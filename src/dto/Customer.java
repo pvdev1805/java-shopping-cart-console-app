@@ -5,14 +5,12 @@ public class Customer {
 	private String name;
 	private String accountId;
 	private String rankId;
-	private String cartId;
 	
-	public Customer(String customerId, String name, String accountId, String rankId, String cartId) {
+	public Customer(String customerId, String name, String accountId, String rankId) {
 		this.customerId = customerId;
 		this.name = name;
 		this.accountId = accountId;
 		this.rankId = rankId;
-		this.cartId = cartId;
 	}
 	
 	public String getCustomerId() {
@@ -25,10 +23,6 @@ public class Customer {
 	
 	public String getRankId() {
 		return rankId;
-	}
-	
-	public String getCartId() {
-		return cartId;
 	}
 	
 	public String getAccountId() {
