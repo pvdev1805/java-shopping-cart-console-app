@@ -2,7 +2,6 @@ package dto;
 
 public class Order {
 	private String id;
-	private String shopId;
 	private String customerId;
 	private String cartId;
 	private double shippingCost;
@@ -10,9 +9,8 @@ public class Order {
 	private int estimatedDeliveryHours;
 	private String voucherId;
 	
-	public Order(String id, String shopId, String customerId, String cartId, double shippingCost, double totalAmount, int estimatedDeliveryHours, String voucherId) {
+	public Order(String id, String customerId, String cartId, double shippingCost, double totalAmount, int estimatedDeliveryHours, String voucherId) {
 		this.id = id;
-		this.shopId = shopId;
 		this.customerId = customerId;
 		this.cartId = cartId;
 		this.shippingCost = shippingCost;
@@ -23,10 +21,6 @@ public class Order {
 	
 	public String getId() {
 		return id;
-	}
-	
-	public String getShopId() {
-		return shopId;
 	}
 	
 	public String getCustomerId() {
