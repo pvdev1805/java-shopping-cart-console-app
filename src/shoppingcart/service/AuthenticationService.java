@@ -1,6 +1,6 @@
-package service;
+package shoppingcart.service;
 
-import dto.*;
+import shoppingcart.dto.*;
 
 import java.util.ArrayList;
 import java.util.UUID;

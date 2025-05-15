@@ -1,4 +1,4 @@
-package dto;
+package shoppingcart.dto;
 
 import java.util.ArrayList;
 

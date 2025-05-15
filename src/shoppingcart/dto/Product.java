@@ -1,4 +1,4 @@
-package dto;
+package shoppingcart.dto;
 
 public class Product {
 	protected String productId;

@@ -1,4 +1,4 @@
-package dto;
+package shoppingcart.dto;
 
 public class Promotion {
 	private String promotionId;

@@ -1,6 +1,6 @@
-package service;
+package shoppingcart.service;
 
-import dto.*;
+import shoppingcart.dto.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-
-
 public class DatabaseService {
-	private static final String DATABASE_PATH = "src/database/";
+	private static final String DATABASE_PATH = "src/shoppingcart/database/";
 	
 	private ArrayList<String[]> readTextFile(String filePath){
 		ArrayList<String[]> lines = new ArrayList<>();
@@ -125,17 +123,9 @@ public class DatabaseService {
         	}
         	return null;
         });
-        for(String[] parts : readTextFile(folderPath + "ranks.txt")){
-        	if(parts.length == 3) {
-        		String rankId = parts[0].trim();
-                String rankName = parts[1].trim();
-                String promotionId = parts[2].trim();
-                ranks.add(new Rank(rankId, rankName, promotionId));
-        	}
-        }
         
         // Load vouchers
-        for(String[] parts : readTextFile(folderPath + "vouchers.txt")){
+        ArrayList<Voucher> vouchers = loadData(folderPath + "vouchers.txt", parts -> {
         	if(parts.length == 7) {
         		String id = parts[0].trim();
         		String code = parts[1].trim();
@@ -144,9 +134,10 @@ public class DatabaseService {
                 boolean active = Boolean.parseBoolean(parts[4].trim());
                 int customerLimit = Integer.parseInt(parts[5].trim());
                 int customerUsage = Integer.parseInt(parts[6].trim());
-                vouchers.add(new Voucher(id, code, discount, discountType, active, customerLimit, customerUsage));
+        		return new Voucher(id, code, discount, discountType, active, customerLimit, customerUsage);
         	}
-        }
+        	return null;
+        });
         
         return new ShopData(shop, accounts, customers, products, promotions, ranks, vouchers);
 	}
