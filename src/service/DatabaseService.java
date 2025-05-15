@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.function.Function;
 
 
 
@@ -35,6 +36,22 @@ public class DatabaseService {
 		return lines;
 	}
 	
+	private <T> ArrayList<T> loadData(String filePath, Function<String[], T> mapper){
+		ArrayList<T> result = new ArrayList<>();
+		for(String[] parts: readTextFile(filePath)) {
+			try {
+				T item = mapper.apply(parts);
+				if(item != null) {
+					result.add(item);
+				}
+			} catch (Exception e) {
+				System.out.println("Error: Could not mapping line in file: " + filePath);
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public ArrayList<Shop> loadShops(){
 		ArrayList<Shop> shops = new ArrayList<Shop>();
 		String filePath = DATABASE_PATH + "shops.txt";
@@ -52,56 +69,62 @@ public class DatabaseService {
 	
 	public ShopData loadShopData(Shop shop) {
 		String folderPath = DATABASE_PATH + shop.getName() + "/";
-		
-		ArrayList<Account> accounts = new ArrayList<>();
-        ArrayList<Customer> customers = new ArrayList<>();
-        ArrayList<Product> products = new ArrayList<>();
-        ArrayList<Promotion> promotions = new ArrayList<>();
-        ArrayList<Rank> ranks = new ArrayList<>();
-        ArrayList<Voucher> vouchers = new ArrayList<>();
         
         // Load accounts
-        for(String[] parts : readTextFile(folderPath + "accounts.txt")) {
+        ArrayList<Account> accounts = loadData(folderPath + "accounts.txt", parts -> {
         	if(parts.length == 3) {
         		String accountId = parts[0].trim();
         		String username = parts[1].trim();
         		String password = parts[2].trim();
-        		accounts.add(new Account(accountId, username, password));
+        		return new Account(accountId, username, password);
         	}
-        }
+        	return null;
+        });
         
         // Load customers
-        for(String[] parts : readTextFile(folderPath + "customers.txt")) {
+        ArrayList<Customer> customers = loadData(folderPath + "customers.txt", parts -> {
         	if(parts.length == 4) {
         		String customerId = parts[0].trim();
         		String name = parts[1].trim();
         		String accountId = parts[2].trim();
         		String rankId = parts[3].trim();
-        		customers.add(new Customer(customerId, name, accountId, rankId));
+        		return new Customer(customerId, name, accountId, rankId);
         	}
-        }
+        	return null;
+        });
         
         // Load products
-        for(String[] parts : readTextFile(folderPath + "products.txt")){
+        ArrayList<Product> products = loadData(folderPath + "product.txt", parts -> {
         	if(parts.length == 3) {
         		String productId = parts[0].trim();
         		String productName = parts[1].trim();
         		double price = Double.parseDouble(parts[2].trim());
-        		products.add(new Product(productId, productName, price));
+        		return new Product(productId, productName, price);
         	}
-        }
+        	return null;
+        });
         
         // Load promotions
-        for(String[] parts : readTextFile(folderPath + "promotions.txt")){
+        ArrayList<Promotion> promotions = loadData(folderPath + "promotion.txt", parts -> {
         	if(parts.length == 3) {
         		String promotionId = parts[0].trim();
         		double shippingDiscountPercentage = Double.parseDouble(parts[1].trim());
         		double orderDiscount = Double.parseDouble(parts[2].trim());
-        		promotions.add(new Promotion(promotionId, shippingDiscountPercentage, orderDiscount));
+        		return new Promotion(promotionId, shippingDiscountPercentage, orderDiscount);
         	}
-        }
+        	return null;
+        });
         
         // Load ranks
+        ArrayList<Rank> ranks = loadData(folderPath + "ranks.txt", parts -> {
+        	if(parts.length == 3) {
+        		String rankId = parts[0].trim();
+                String rankName = parts[1].trim();
+                String promotionId = parts[2].trim();
+        		return new Rank(rankId, rankName, promotionId);
+        	}
+        	return null;
+        });
         for(String[] parts : readTextFile(folderPath + "ranks.txt")){
         	if(parts.length == 3) {
         		String rankId = parts[0].trim();
