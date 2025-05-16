@@ -4,7 +4,9 @@ import shoppingcart.dto.*;
 import shoppingcart.common.*;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -51,7 +53,7 @@ public class DatabaseService {
 	}
 	
 	public ArrayList<Shop> loadShops(){
-		String shopsPath = Storage.DATABASE_PATH + "shop.txt";
+		String shopsPath = Storage.DATABASE_PATH + "shops.txt";
 		return loadData(shopsPath, parts -> {
 			String id = parts[0].trim();
 			String name = parts[1].trim();
@@ -73,20 +75,20 @@ public class DatabaseService {
 	
 	public ArrayList<Customer> loadCustomers(){
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
-		String customerPath =  currentShopPath + "customers.txt";
-		return loadData(customerPath, parts -> {
+		String customersPath =  currentShopPath + "customers.txt";
+		return loadData(customersPath, parts -> {
 			String customerId = parts[0].trim();
-    		String name = parts[1].trim();
-    		String accountId = parts[2].trim();
-    		String rankId = parts[3].trim();
-    		return new Customer(customerId, name, accountId, rankId);
+    		String accountId = parts[1].trim();
+    		String rankId = parts[2].trim();
+    		String name = parts[3].trim();
+    		return new Customer(customerId, accountId, rankId, name);
 		});
 	}
 	
 	public ArrayList<Product> loadProducts(){
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
-		String productPath =  currentShopPath + "products.txt";
-		return loadData(productPath, parts -> {
+		String productsPath =  currentShopPath + "products.txt";
+		return loadData(productsPath, parts -> {
 			String productId = parts[0].trim();
     		String productName = parts[1].trim();
     		double price = Double.parseDouble(parts[2].trim());
@@ -151,5 +153,29 @@ public class DatabaseService {
         ArrayList<Voucher> vouchers = loadVouchers();
         
         return new ShopData(Storage.currentShop, accounts, customers, products, promotions, ranks, vouchers);
+	}
+	
+	// After user register a new account (or update their account info), save it 
+	public void saveAccount(Account account) {
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String accountsPath = currentShopPath + "accounts.txt";
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(accountsPath, true))) {
+			writer.write(String.join(",", account.getAccountId(), account.getUsername(), account.getPassword()));
+			writer.newLine();
+		} catch (Exception e) {
+			System.out.println("Error: Failed to save the new account.");
+		}
+	}
+	
+	// After register a new account, save info of that new user into Customers database
+	public void saveCustomer(Customer customer) {
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String customersPath =  currentShopPath + "customers.txt";
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(customersPath, true))) {
+			writer.write(String.join(",", customer.getCustomerId(), customer.getName(), customer.getAccountId(), customer.getRankId()));
+			writer.newLine();
+		} catch (Exception e) {
+			System.out.println("Error: Failed to save the new account.");
+		}
 	}
 }

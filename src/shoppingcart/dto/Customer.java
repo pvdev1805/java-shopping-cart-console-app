@@ -6,7 +6,7 @@ public class Customer {
 	private String accountId;
 	private String rankId;
 	
-	public Customer(String customerId, String name, String accountId, String rankId) {
+	public Customer(String customerId, String accountId, String rankId, String name) {
 		this.customerId = customerId;
 		this.name = name;
 		this.accountId = accountId;

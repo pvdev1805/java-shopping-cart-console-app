@@ -21,10 +21,10 @@ public class Cart {
 	}
 	
 	public ArrayList<CartItem> getItems(){
-		return new ArrayList<>(items);
+		 return this.items;
 	}
 	
 	public void setItems(ArrayList<CartItem> newItems) {
-		this.items = new ArrayList<>(newItems);
+		this.items = newItems;
 	}
 }

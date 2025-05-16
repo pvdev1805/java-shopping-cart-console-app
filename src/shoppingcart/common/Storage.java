@@ -10,4 +10,6 @@ public class Storage {
 	public static Account loggedInAccount = null;
 	
 	public static Customer loggedInCustomer = null;
+	
+	public static Cart cart = null;
 }

@@ -2,24 +2,27 @@ package shoppingcart.service;
 
 import shoppingcart.dto.*;
 import shoppingcart.common.*;
+import shoppingcart.util.*;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class AuthenticationService {
+	DatabaseService dbService = new DatabaseService();
 	CustomerService customerService = new CustomerService();
 	AccountService accountService = new AccountService();
+	RankService rankService = new RankService();
 	
 	public boolean login(String username, String password) {
 		ArrayList<Customer> customers = customerService.getCustomers();
 		ArrayList<Account> accounts = accountService.getAccounts();
         for (Account account : accounts) {
             if (account.getUsername().equals(username) && account.getPassword().equals(password)) {
-                Storage.loggedInAccount = account;
+                // Storage.loggedInAccount = account;
 
                 for (Customer customer : customers) {
                     if (customer.getAccountId().equals(account.getAccountId())) {
                         Storage.loggedInCustomer = customer;
+                        Storage.loggedInAccount = account;
                         return true; // Login successfully
                     }
                 }
@@ -40,22 +43,28 @@ public class AuthenticationService {
         }
 
         // Create a new unique ID
-        String accountId = UUID.randomUUID().toString();
-        String customerId = UUID.randomUUID().toString();
+        String accountId = IdGenerator.generateId("A", 3);
+        String customerId = IdGenerator.generateId("C", 3);
 
         // Create new object for new account
         Account newAccount = new Account(accountId, username, password);
 
         // Initialize the first role
-        ArrayList<Rank> ranks = shopData.getRanks();
+        ArrayList<Rank> ranks = rankService.getRanks();
         String defaultRankId = ranks.isEmpty() ? "" : ranks.get(0).getRankId();
 
         Customer newCustomer = new Customer(customerId, customerName, accountId, defaultRankId);
 
-        // Add account to accountList of shopData
+        // Add new account and customer to data
         accounts.add(newAccount);
         customers.add(newCustomer);
-
+        
+        // Add new account to the correct accounts.txt file of the correct shop
+        dbService.saveAccount(newAccount);
+        
+        // Add new customer to the correct customers.txt file of the correct shop
+        dbService.saveCustomer(newCustomer);
+        
         return true;
     }
 	
