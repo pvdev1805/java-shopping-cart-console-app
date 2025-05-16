@@ -1,28 +1,25 @@
 package shoppingcart.service;
 
 import shoppingcart.dto.*;
+import shoppingcart.common.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class AuthenticationService {
-	private ShopData shopData;
-	
-	private Account loggedInAccount = null;
-	private Customer loggedInCustomer = null;
-	
-	public AuthenticationService(ShopData shopdata) {
-		this.shopData = shopdata;
-	}
+	CustomerService customerService = new CustomerService();
+	AccountService accountService = new AccountService();
 	
 	public boolean login(String username, String password) {
-        for (Account account : shopData.getAccounts()) {
+		ArrayList<Customer> customers = customerService.getCustomers();
+		ArrayList<Account> accounts = accountService.getAccounts();
+        for (Account account : accounts) {
             if (account.getUsername().equals(username) && account.getPassword().equals(password)) {
-                this.loggedInAccount = account;
+                Storage.loggedInAccount = account;
 
-                for (Customer customer : shopData.getCustomers()) {
+                for (Customer customer : customers) {
                     if (customer.getAccountId().equals(account.getAccountId())) {
-                        this.loggedInCustomer = customer;
+                        Storage.loggedInCustomer = customer;
                         return true; // Login successfully
                     }
                 }
@@ -32,9 +29,12 @@ public class AuthenticationService {
     }
 	
 	public boolean register(String username, String password, String customerName) {
+		ArrayList<Customer> customers = customerService.getCustomers();
+		ArrayList<Account> accounts = accountService.getAccounts();
+		
 		// Check whether username is existed or not
-        for (Account acc : shopData.getAccounts()) {
-            if (acc.getUsername().equals(username)) {
+        for (Account account : accounts) {
+            if (account.getUsername().equals(username)) {
                 return false; // username has already existed
             }
         }
@@ -53,26 +53,26 @@ public class AuthenticationService {
         Customer newCustomer = new Customer(customerId, customerName, accountId, defaultRankId);
 
         // Add account to accountList of shopData
-        shopData.getAccounts().add(newAccount);
-        shopData.getCustomers().add(newCustomer);
+        accounts.add(newAccount);
+        customers.add(newCustomer);
 
         return true;
     }
 	
 	public void logout() {
-        this.loggedInAccount = null;
-        this.loggedInCustomer = null;
+        Storage.loggedInAccount = null;
+        Storage.loggedInCustomer = null;
     }
 
     public boolean isLoggedIn() {
-        return loggedInAccount != null;
+        return Storage.loggedInAccount != null;
     }
 
     public Account getLoggedInAccount() {
-        return loggedInAccount;
+        return Storage.loggedInAccount;
     }
 
     public Customer getLoggedInCustomer() {
-        return loggedInCustomer;
+        return Storage.loggedInCustomer;
     }
 }
