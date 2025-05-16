@@ -88,6 +88,7 @@ public class Main {
 		ProductService productService = new ProductService();
 		CartService cartService = new CartService();
 		AuthenticationService authenticationService = new AuthenticationService();
+		CustomerService customerService = new CustomerService();
 		
 		int option;
 		System.out.println("\n------- Welcome, " + Storage.loggedInCustomer.getName() + " -------\n");
@@ -129,7 +130,7 @@ public class Main {
 					cartService.showCart();
 					break;
 				case VIEW_RANK_AND_PROMOTION:
-					// Need to implement
+					customerService.showCustomerRankAndPromotion();
 					break;
 				case CHECKOUT:
 					// Need to implement
