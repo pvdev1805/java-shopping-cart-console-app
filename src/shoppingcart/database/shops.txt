@@ -1,3 +1,3 @@
-id,name
-S001,shopA
-S002,shopB
+id,name,dbPath
+S001,shop Harvey Norman,shop1
+S002,shop JB Hi-Fi, shop2

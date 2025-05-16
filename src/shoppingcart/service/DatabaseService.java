@@ -1,6 +1,7 @@
 package shoppingcart.service;
 
 import shoppingcart.dto.*;
+import shoppingcart.common.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 public class DatabaseService {
-	private static final String DATABASE_PATH = "src/shoppingcart/database/";
 	
 	private ArrayList<String[]> readTextFile(String filePath){
 		ArrayList<String[]> lines = new ArrayList<>();
@@ -34,7 +34,7 @@ public class DatabaseService {
 		return lines;
 	}
 	
-	private <T> ArrayList<T> loadData(String filePath, Function<String[], T> mapper){
+	public <T> ArrayList<T> loadData(String filePath, Function<String[], T> mapper){
 		ArrayList<T> result = new ArrayList<>();
 		for(String[] parts: readTextFile(filePath)) {
 			try {
@@ -51,94 +51,105 @@ public class DatabaseService {
 	}
 	
 	public ArrayList<Shop> loadShops(){
-		ArrayList<Shop> shops = new ArrayList<Shop>();
-		String filePath = DATABASE_PATH + "shops.txt";
-		
-		ArrayList<String[]> lines = readTextFile(filePath);
-		for(String[] parts: lines) {
-			if(parts.length == 2) {
-				String id = parts[0].trim();
-				String name = parts[1].trim();
-				shops.add(new Shop(id, name));
-			}
-		}
-		return shops;
+		String shopsPath = Storage.DATABASE_PATH + "shop.txt";
+		return loadData(shopsPath, parts -> {
+			String id = parts[0].trim();
+			String name = parts[1].trim();
+			String dbPath = parts[2].trim();
+			return new Shop(id, name, dbPath);
+		});
 	}
 	
-	public ShopData loadShopData(Shop shop) {
-		String folderPath = DATABASE_PATH + shop.getName() + "/";
-        
+	public ArrayList<Account> loadAccounts(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String accountsPath = currentShopPath + "accounts.txt";
+		return loadData(accountsPath, parts -> {
+			String accountId = parts[0].trim();
+    		String username = parts[1].trim();
+    		String password = parts[2].trim();
+    		return new Account(accountId, username, password);
+		});
+	}
+	
+	public ArrayList<Customer> loadCustomers(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String customerPath =  currentShopPath + "customers.txt";
+		return loadData(customerPath, parts -> {
+			String customerId = parts[0].trim();
+    		String name = parts[1].trim();
+    		String accountId = parts[2].trim();
+    		String rankId = parts[3].trim();
+    		return new Customer(customerId, name, accountId, rankId);
+		});
+	}
+	
+	public ArrayList<Product> loadProducts(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String productPath =  currentShopPath + "products.txt";
+		return loadData(productPath, parts -> {
+			String productId = parts[0].trim();
+    		String productName = parts[1].trim();
+    		double price = Double.parseDouble(parts[2].trim());
+    		return new Product(productId, productName, price);
+		});
+	}
+	
+	public ArrayList<Promotion> loadPromotions(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String promotionsPath =  currentShopPath + "promotions.txt";
+		return loadData(promotionsPath, parts -> {
+			String promotionId = parts[0].trim();
+    		double shippingDiscountPercentage = Double.parseDouble(parts[1].trim());
+    		double orderDiscount = Double.parseDouble(parts[2].trim());
+    		return new Promotion(promotionId, shippingDiscountPercentage, orderDiscount);
+		});
+	}
+	
+	public ArrayList<Rank> loadRanks(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String ranksPath =  currentShopPath + "ranks.txt";
+		return loadData(ranksPath, parts -> {
+			String rankId = parts[0].trim();
+            String rankName = parts[1].trim();
+            String promotionId = parts[2].trim();
+    		return new Rank(rankId, rankName, promotionId);
+		});
+	}
+	
+	public ArrayList<Voucher> loadVouchers(){
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String vouchersPath =  currentShopPath + "vouchers.txt";
+		return loadData(vouchersPath, parts -> {
+			String id = parts[0].trim();
+    		String code = parts[1].trim();
+            double discount = Double.parseDouble(parts[2].trim());
+            DiscountType discountType = DiscountType.valueOf(parts[3].trim().toUpperCase());
+            boolean active = Boolean.parseBoolean(parts[4].trim());
+            int customerLimit = Integer.parseInt(parts[5].trim());
+            int customerUsage = Integer.parseInt(parts[6].trim());
+    		return new Voucher(id, code, discount, discountType, active, customerLimit, customerUsage);
+		});
+	}
+	
+	public ShopData loadShopDataAll() {
         // Load accounts
-        ArrayList<Account> accounts = loadData(folderPath + "accounts.txt", parts -> {
-        	if(parts.length == 3) {
-        		String accountId = parts[0].trim();
-        		String username = parts[1].trim();
-        		String password = parts[2].trim();
-        		return new Account(accountId, username, password);
-        	}
-        	return null;
-        });
+        ArrayList<Account> accounts = loadAccounts();
         
         // Load customers
-        ArrayList<Customer> customers = loadData(folderPath + "customers.txt", parts -> {
-        	if(parts.length == 4) {
-        		String customerId = parts[0].trim();
-        		String name = parts[1].trim();
-        		String accountId = parts[2].trim();
-        		String rankId = parts[3].trim();
-        		return new Customer(customerId, name, accountId, rankId);
-        	}
-        	return null;
-        });
+        ArrayList<Customer> customers = loadCustomers();
         
         // Load products
-        ArrayList<Product> products = loadData(folderPath + "product.txt", parts -> {
-        	if(parts.length == 3) {
-        		String productId = parts[0].trim();
-        		String productName = parts[1].trim();
-        		double price = Double.parseDouble(parts[2].trim());
-        		return new Product(productId, productName, price);
-        	}
-        	return null;
-        });
+        ArrayList<Product> products = loadProducts();
         
         // Load promotions
-        ArrayList<Promotion> promotions = loadData(folderPath + "promotion.txt", parts -> {
-        	if(parts.length == 3) {
-        		String promotionId = parts[0].trim();
-        		double shippingDiscountPercentage = Double.parseDouble(parts[1].trim());
-        		double orderDiscount = Double.parseDouble(parts[2].trim());
-        		return new Promotion(promotionId, shippingDiscountPercentage, orderDiscount);
-        	}
-        	return null;
-        });
+        ArrayList<Promotion> promotions = loadPromotions();
         
         // Load ranks
-        ArrayList<Rank> ranks = loadData(folderPath + "ranks.txt", parts -> {
-        	if(parts.length == 3) {
-        		String rankId = parts[0].trim();
-                String rankName = parts[1].trim();
-                String promotionId = parts[2].trim();
-        		return new Rank(rankId, rankName, promotionId);
-        	}
-        	return null;
-        });
+        ArrayList<Rank> ranks = loadRanks();
         
         // Load vouchers
-        ArrayList<Voucher> vouchers = loadData(folderPath + "vouchers.txt", parts -> {
-        	if(parts.length == 7) {
-        		String id = parts[0].trim();
-        		String code = parts[1].trim();
-                double discount = Double.parseDouble(parts[2].trim());
-                DiscountType discountType = DiscountType.valueOf(parts[3].trim().toUpperCase());
-                boolean active = Boolean.parseBoolean(parts[4].trim());
-                int customerLimit = Integer.parseInt(parts[5].trim());
-                int customerUsage = Integer.parseInt(parts[6].trim());
-        		return new Voucher(id, code, discount, discountType, active, customerLimit, customerUsage);
-        	}
-        	return null;
-        });
+        ArrayList<Voucher> vouchers = loadVouchers();
         
-        return new ShopData(shop, accounts, customers, products, promotions, ranks, vouchers);
+        return new ShopData(Storage.currentShop, accounts, customers, products, promotions, ranks, vouchers);
 	}
 }
