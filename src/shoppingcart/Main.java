@@ -24,7 +24,8 @@ public class Main {
 		
 		runSession();
 		
-		System.out.println("\nTerminated!\n");
+		System.out.println("\nThe shopping app has been terminated.");
+		System.out.println("Thank you for shopping at our shop! See you next time!");
 	}
 	
 	private static Shop selectShop() {
@@ -76,6 +77,20 @@ public class Main {
 		}
 		
 		return isValidLogin;
+	}
+	
+	private static void doCheckout() {
+		if(Storage.cart.getItems().size() == 0) {
+			System.out.println("\nYour cart is empty. There is nothing to checkout!");
+			return;
+		}
+		
+		CartService cartService = new CartService();
+		
+		double checkoutAmount = cartService.checkout();
+		System.out.printf("\nCheckout: %.2f AUD \n", checkoutAmount);
+		
+		System.out.println("\nYour order has been paid successfully! Thank you!");
 	}
 	
 	private static void runSession() {
@@ -133,7 +148,7 @@ public class Main {
 					customerService.showCustomerRankAndPromotion();
 					break;
 				case CHECKOUT:
-					// Need to implement
+					doCheckout();
 					break;
 				case LOGOUT:
 					option = 0;

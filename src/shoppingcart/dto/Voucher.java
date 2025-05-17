@@ -46,4 +46,12 @@ public class Voucher {
 	public int getCustomerUsage() {
 		return customerUsage;
 	}
+	
+	public void setCustomerUsage(int customerUsage) {
+		this.customerUsage = customerUsage;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 }

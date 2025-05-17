@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import shoppingcart.common.Storage;
 import shoppingcart.dto.CartItem;
 import shoppingcart.dto.Product;
+import shoppingcart.dto.Promotion;
+import shoppingcart.dto.Rank;
 
 public class CartService {
-	// addToCart
 	public void addToCart(Product product, int quantity) {
 		CartItem item = findProduct(product);
 		
@@ -22,20 +23,16 @@ public class CartService {
 		}
 	}
 	
-	// findProduct
 	public CartItem findProduct(Product product) {
 		ArrayList<CartItem> items = Storage.cart.getItems();
 		for(CartItem item: items) {
 			if(item.getProductName().equals(product.getProductName())) {
-				// log test
-				System.out.println("Name: " + item.getProductName());
 				return item;
 			}
 		}
 		return null;
 	}
 	
-	// showCart
 	public void showCart() {
 		ArrayList<CartItem> items = Storage.cart.getItems();
 		
@@ -55,5 +52,42 @@ public class CartService {
 		}
 	}
 	
-	// clearCart
+	public double checkout() {
+		if(Storage.cart.getItems().size() == 0) return 0;
+		
+		double subtotal = 0;
+		int countItem = 0;
+		double shippingFee;
+		for(CartItem item: Storage.cart.getItems()) {
+			subtotal += (item.getPrice() * item.getQuantity());
+			countItem += item.getQuantity();
+		}
+		
+		if(countItem <= 4) {
+			shippingFee = 20;
+		}else if(countItem <= 10) {
+			shippingFee = 40;
+		} else {
+			shippingFee = 100;
+		}
+		System.out.printf("Total Amount: %.2f AUD\n", subtotal);
+		System.out.printf("Shipping Fee: %.2f AUD\n", shippingFee);
+		
+		CustomerService customerService = new CustomerService();
+		Rank rank = customerService.getCustomerRank();
+		Promotion promotion = customerService.getCustomerPromotion();
+		double shippingDiscountPercentage = promotion.getShippingDiscountPercentage();
+		double orderDiscountPercentage = promotion.getOrderDiscount();
+		System.out.println("RANK: " + rank.getRankName());
+		System.out.println("PROMOTION: ");
+		System.out.printf("- Shipping Discount Percentage: %.2f%% = %.2f AUD\n", shippingDiscountPercentage, shippingDiscountPercentage/100 * shippingFee);
+		System.out.printf("- Order Discount Percentage: %.2f%% = %.2f AUD\n", orderDiscountPercentage, orderDiscountPercentage/100 * subtotal);
+		
+		// Need to implement voucher logic
+		
+		double checkoutAmount = shippingFee * ((100 - shippingDiscountPercentage)/100) + subtotal * (100 - orderDiscountPercentage)/100;
+		
+		Storage.cart.getItems().clear();
+		return checkoutAmount;
+	}
 }

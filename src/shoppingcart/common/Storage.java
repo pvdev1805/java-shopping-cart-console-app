@@ -12,4 +12,6 @@ public class Storage {
 	public static Customer loggedInCustomer = null;
 	
 	public static Cart cart = null;
+	
+	public static Voucher appliedVoucher = null;
 }

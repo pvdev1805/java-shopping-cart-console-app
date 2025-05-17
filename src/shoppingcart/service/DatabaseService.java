@@ -155,7 +155,18 @@ public class DatabaseService {
         return new ShopData(Storage.currentShop, accounts, customers, products, promotions, ranks, vouchers);
 	}
 	
+	public <T> void saveData(String filePath, T data, Function<T, String> mapper) {
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+			writer.write(mapper.apply(data));
+			writer.newLine();
+		} catch (IOException e) {
+			System.out.println("Error: Failed to write data to " + filePath);
+			e.printStackTrace();
+		}
+	}
+	
 	// After user register a new account (or update their account info), save it 
+	/*
 	public void saveAccount(Account account) {
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
 		String accountsPath = currentShopPath + "accounts.txt";
@@ -166,8 +177,16 @@ public class DatabaseService {
 			System.out.println("Error: Failed to save the new account.");
 		}
 	}
+	*/
+	
+	public void saveAccount(Account account) {
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String accountsPath = currentShopPath + "accounts.txt";
+		saveData(accountsPath, account, acc -> String.join(",", acc.getAccountId(), acc.getUsername(), acc.getPassword()));
+	}
 	
 	// After register a new account, save info of that new user into Customers database
+	/*
 	public void saveCustomer(Customer customer) {
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
 		String customersPath =  currentShopPath + "customers.txt";
@@ -177,5 +196,44 @@ public class DatabaseService {
 		} catch (Exception e) {
 			System.out.println("Error: Failed to save the new account.");
 		}
+	}
+	*/
+	
+	public void saveCustomer(Customer customer) {
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String customersPath =  currentShopPath + "customers.txt";
+		saveData(customersPath, customer, cus -> String.join(",", cus.getCustomerId(), cus.getAccountId(), cus.getRankId(), cus.getName()));
+	}
+	
+	public <T> void updateData(String filePath, ArrayList<T> dataList, Function<T, String> mapper, String header) {
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+			if(header != null && !header.isEmpty()) {
+				writer.write(header);
+				writer.newLine();
+			}
+			for(T item: dataList) {
+				writer.write(mapper.apply(item));
+				writer.newLine();
+			}
+		} catch (IOException e) {
+			System.out.println("Error: Failed to upload file: " + filePath);
+			e.printStackTrace();
+		}
+	}
+	
+	public void uploadVoucher(ArrayList<Voucher> newVouchers) {
+		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
+		String vouchersPath =  currentShopPath + "vouchers.txt";
+		String header = "id,code,discount,discountType,active,customerLimit,customerUsage";
+		
+		updateData(vouchersPath, newVouchers, v -> String.join(",",
+		        v.getId(),
+		        v.getCode(),
+		        String.valueOf(v.getDiscount()),
+		        v.getDiscountType().toString(),
+		        String.valueOf(v.isActive()),
+		        String.valueOf(v.getCustomerLimit()),
+		        String.valueOf(v.getCustomerUsage())
+		    ), header);
 	}
 }
