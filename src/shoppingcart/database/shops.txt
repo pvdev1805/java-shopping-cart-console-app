@@ -1,3 +1,4 @@
 id,name,dbPath
 S001,shop Harvey Norman,shop1
 S002,shop JB Hi-Fi,shop2
+S003,shop Coles,shop3

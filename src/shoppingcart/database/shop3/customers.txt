@@ -1,0 +1,4 @@
+customerId,accountId,rankId,name
+C001,A001,R001,Kyle Landers
+C002,A002,R003,John Smith
+C003,A003,R002,Nathan Downs

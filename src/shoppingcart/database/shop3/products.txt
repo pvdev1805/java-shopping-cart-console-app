@@ -1,0 +1,6 @@
+productId,productName,price
+PT001,Milk,9.9
+PT002,Banana,6.5
+PT003,Egg,12.9
+PT004,Ham Hock,15.9
+PT005,Fish,13.9

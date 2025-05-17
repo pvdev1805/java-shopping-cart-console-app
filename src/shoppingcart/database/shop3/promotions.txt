@@ -1,0 +1,5 @@
+promotionId,shippingDiscountPercentage,orderDiscount
+P001,0.0,0.0
+P002,50.0,0.0
+P003,50.0,2.0
+P004,50.0,3.0
