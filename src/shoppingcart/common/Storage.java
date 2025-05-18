@@ -14,4 +14,6 @@ public class Storage {
 	public static Cart cart = null;
 	
 	public static Voucher appliedVoucher = null;
+	
+	public static String receiverEmail = "phu61153426@gmail.com"; 
 }
