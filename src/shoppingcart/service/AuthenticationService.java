@@ -89,9 +89,7 @@ public abstract class AuthenticationService {
         return Storage.loggedInCustomer;
     }
     
-    public void handleLoginSuccess(Account account) {
-    	
-    }
+    public abstract void handleLoginSuccess(Account account);
     
     public static AuthenticationService getAuthenService() {
     	String shopPath = Storage.currentShop.getDbPath();

@@ -22,7 +22,7 @@ public class EmailService {
 		// Enable SMTP Authentication
 		props.put("mail.smtp.auth", "true");
 		
-		// Enable STARTTLE
+		// Enable STARTTLS
 		props.put("mail.smtp.starttls.enable", "true");
 		
 		// Sending from host
@@ -57,7 +57,7 @@ public class EmailService {
 			// send the email message
             Transport.send(message);
             
-            System.out.println("Well done! Email sent successfully to: " + toEmail);
+            System.out.println("\nWell done! Email sent successfully to: " + toEmail);
 			
 		} catch (MessagingException e) {
 			throw new RuntimeException("Error: Failed to send email: " + e.getMessage());

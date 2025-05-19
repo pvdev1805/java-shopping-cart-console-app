@@ -56,9 +56,7 @@ public abstract class CartService {
 		}
 	}
 	
-    public void handleCheckoutSuccess(Account account, double checkoutAmount) {
-    	
-    }
+    public abstract void handleCheckoutSuccess(Account account, double checkoutAmount);
     
     public static CartService getCartService() {
     	String shopPath = Storage.currentShop.getDbPath();
