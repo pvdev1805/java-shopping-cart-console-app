@@ -3,12 +3,16 @@ package shoppingcart.service;
 import java.util.ArrayList;
 
 import shoppingcart.common.Storage;
+import shoppingcart.dto.Account;
 import shoppingcart.dto.CartItem;
 import shoppingcart.dto.Product;
 import shoppingcart.dto.Promotion;
 import shoppingcart.dto.Rank;
+import shoppingcart.service.shop1.Shop1CheckoutService;
+import shoppingcart.service.shop2.Shop2CheckoutService;
+import shoppingcart.service.shop3.Shop3CheckoutService;
 
-public class CartService {
+public abstract class CartService {
 	public void addToCart(Product product, int quantity) {
 		CartItem item = findProduct(product);
 		
@@ -52,6 +56,22 @@ public class CartService {
 		}
 	}
 	
+    public void handleCheckoutSuccess(Account account, double checkoutAmount) {
+    	
+    }
+    
+    public static CartService getCartService() {
+    	String shopPath = Storage.currentShop.getDbPath();
+    	if(shopPath == "shop1") {
+    		return new Shop1CheckoutService();
+    	} else if(shopPath == "shop2") {
+    		return new Shop2CheckoutService();
+    	} else if(shopPath == "shop3") {
+    		return new Shop3CheckoutService();
+    	}
+    	return null;
+    }
+	
 	public double checkout() {
 		if(Storage.cart.getItems().size() == 0) return 0;
 		
@@ -86,6 +106,8 @@ public class CartService {
 		// Need to implement voucher logic
 		
 		double checkoutAmount = shippingFee * ((100 - shippingDiscountPercentage)/100) + subtotal * (100 - orderDiscountPercentage)/100;
+		
+		handleCheckoutSuccess(Storage.loggedInAccount, checkoutAmount);
 		
 		Storage.cart.getItems().clear();
 		return checkoutAmount;

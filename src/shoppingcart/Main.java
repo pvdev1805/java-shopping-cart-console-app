@@ -11,10 +11,17 @@ import shoppingcart.util.IdGenerator;
 public class Main {
 	static Scanner sc = new Scanner(System.in);
 	
-	public static Shop selectedShop = null;
+	static Shop selectedShop = null;
+	private static CartService cartService = null;
+	private static AuthenticationService authenticationService = null;
 	
 	public static void main(String[] args) {
 		selectedShop = selectShop();
+		Storage.currentShop = selectedShop;
+		
+		authenticationService = AuthenticationService.getAuthenService();
+		
+		cartService = CartService.getCartService();
 		
 		boolean isLoggedIn = false;
 		
@@ -48,7 +55,6 @@ public class Main {
 				Shop result = shops.get(option - 1);
 				System.out.printf("\n------------- Welcome to %s ! -------------\n", result.getName());
 				isValidShop = true;
-				Storage.currentShop = result;
 				return result;
 			}
 		} while (!isValidShop);
@@ -57,7 +63,6 @@ public class Main {
 	}
 	
 	private static boolean doLogin() {
-		AuthenticationService authenticationService = new AuthenticationService();
 		
 		System.out.println("\n============================== LOGIN ==============================");
 		System.out.print("--> Username: ");
@@ -85,10 +90,10 @@ public class Main {
 			return;
 		}
 		
-		CartService cartService = new CartService();
-		
 		double checkoutAmount = cartService.checkout();
 		System.out.printf("\nCheckout: %.2f AUD \n", checkoutAmount);
+		
+		cartService.checkout();
 		
 		System.out.println("\nYour order has been paid successfully! Thank you!");
 	}
@@ -101,8 +106,6 @@ public class Main {
 		final int LOGOUT = 0;
 		
 		ProductService productService = new ProductService();
-		CartService cartService = new CartService();
-		AuthenticationService authenticationService = new AuthenticationService();
 		CustomerService customerService = new CustomerService();
 		
 		int option;

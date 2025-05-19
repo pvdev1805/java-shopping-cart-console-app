@@ -1,12 +1,15 @@
 package shoppingcart.service;
 
 import shoppingcart.dto.*;
+import shoppingcart.service.shop1.Shop1AuthenService;
+import shoppingcart.service.shop2.Shop2AuthenService;
+import shoppingcart.service.shop3.Shop3AuthenService;
 import shoppingcart.common.*;
 import shoppingcart.util.*;
 
 import java.util.ArrayList;
 
-public class AuthenticationService {
+public abstract class AuthenticationService {
 	DatabaseService dbService = new DatabaseService();
 	CustomerService customerService = new CustomerService();
 	AccountService accountService = new AccountService();
@@ -23,6 +26,7 @@ public class AuthenticationService {
                     if (customer.getAccountId().equals(account.getAccountId())) {
                         Storage.loggedInCustomer = customer;
                         Storage.loggedInAccount = account;
+                        handleLoginSuccess(account);
                         return true; // Login successfully
                     }
                 }
@@ -83,5 +87,21 @@ public class AuthenticationService {
 
     public Customer getLoggedInCustomer() {
         return Storage.loggedInCustomer;
+    }
+    
+    public void handleLoginSuccess(Account account) {
+    	
+    }
+    
+    public static AuthenticationService getAuthenService() {
+    	String shopPath = Storage.currentShop.getDbPath();
+    	if(shopPath.equals("shop1")) {
+    		return new Shop1AuthenService();
+    	} else if(shopPath.equals("shop2")) {
+    		return new Shop2AuthenService();
+    	} else if(shopPath.equals("shop3")) {
+    		return new Shop3AuthenService();
+    	}
+    	return null;
     }
 }

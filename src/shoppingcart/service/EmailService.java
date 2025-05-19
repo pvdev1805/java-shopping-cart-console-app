@@ -14,7 +14,7 @@ public class EmailService {
 	String appPassword = "wxqg oyac qzov ejud";
 	
 	// Sending email from host having a specific IP address
-	String sendingHost = "smtp.mail.com";
+	String sendingHost = "smtp.gmail.com";
 	
 	public void sendEmail(String toEmail, String subject, String content) {
 		// Configure mail server Gmail
@@ -32,7 +32,7 @@ public class EmailService {
 		
 		// Create a mail session object with authentication
 		Session session = Session.getInstance(props, new Authenticator() {
-			@Override
+			
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, appPassword);
             }

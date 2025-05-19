@@ -133,28 +133,6 @@ public class DatabaseService {
 		});
 	}
 	
-	public ShopData loadShopDataAll() {
-        // Load accounts
-        ArrayList<Account> accounts = loadAccounts();
-        
-        // Load customers
-        ArrayList<Customer> customers = loadCustomers();
-        
-        // Load products
-        ArrayList<Product> products = loadProducts();
-        
-        // Load promotions
-        ArrayList<Promotion> promotions = loadPromotions();
-        
-        // Load ranks
-        ArrayList<Rank> ranks = loadRanks();
-        
-        // Load vouchers
-        ArrayList<Voucher> vouchers = loadVouchers();
-        
-        return new ShopData(Storage.currentShop, accounts, customers, products, promotions, ranks, vouchers);
-	}
-	
 	public <T> void saveData(String filePath, T data, Function<T, String> mapper) {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
 			writer.write(mapper.apply(data));
@@ -165,39 +143,11 @@ public class DatabaseService {
 		}
 	}
 	
-	// After user register a new account (or update their account info), save it 
-	/*
-	public void saveAccount(Account account) {
-		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
-		String accountsPath = currentShopPath + "accounts.txt";
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(accountsPath, true))) {
-			writer.write(String.join(",", account.getAccountId(), account.getUsername(), account.getPassword()));
-			writer.newLine();
-		} catch (Exception e) {
-			System.out.println("Error: Failed to save the new account.");
-		}
-	}
-	*/
-	
 	public void saveAccount(Account account) {
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
 		String accountsPath = currentShopPath + "accounts.txt";
 		saveData(accountsPath, account, acc -> String.join(",", acc.getAccountId(), acc.getUsername(), acc.getPassword()));
 	}
-	
-	// After register a new account, save info of that new user into Customers database
-	/*
-	public void saveCustomer(Customer customer) {
-		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
-		String customersPath =  currentShopPath + "customers.txt";
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(customersPath, true))) {
-			writer.write(String.join(",", customer.getCustomerId(), customer.getName(), customer.getAccountId(), customer.getRankId()));
-			writer.newLine();
-		} catch (Exception e) {
-			System.out.println("Error: Failed to save the new account.");
-		}
-	}
-	*/
 	
 	public void saveCustomer(Customer customer) {
 		String currentShopPath = Storage.DATABASE_PATH + Storage.currentShop.getDbPath() + "/";
