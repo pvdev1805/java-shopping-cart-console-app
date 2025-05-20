@@ -10,4 +10,3 @@ public class Shop2AuthenService extends AuthenticationService {
 		System.out.println("You have logged in successfully! Welcome, " + username + " !");
 	}
 }
-
